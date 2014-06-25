@@ -1,0 +1,42 @@
+function list-ports() {
+	sudo firewall-cmd --list-all
+}
+
+function add-port() {
+	RULE="sudo firewall-cmd --zone=public --add-port=$1/tcp"
+	eval $RULE
+}
+
+function rm-port() {
+	RULE="sudo firewall-cmd --zone=public --remove-port=$1/tcp"
+	eval $RULE	
+}
+
+function add-ip-port  () {
+	#sudo firewall-cmd --zone=public --add-rich-rule='rule family="ipv4" source address="81.193.152.66/24" port port="5900" protocol="tcp" accept'
+	RULE="sudo firewall-cmd --zone=public --add-rich-rule='rule family=\"ipv4\" source address=\"$1/24\" port port=\"$2\" protocol=\"tcp\" accept'";
+	eval $RULE;
+}
+
+function rm-rule () {
+	OIFS="${IFS}"
+	NIFS=$'\n'
+	IFS="${NIFS}"
+	RESULT=`sudo firewall-cmd --list-rich-rules`
+	index=0;
+	for	rule in $RESULT;
+	do
+		echo -e "[$index] - $rule";
+		rules[index]=$rule;
+		let index=index+1;
+	done
+	len=${#rules[@]};
+	if [ "$len" -gt "0" ];
+	then
+		read choice;
+		rule=${rules[$choice]}
+		RULE="sudo firewall-cmd --zone=public --remove-rich-rule='$rule'";
+		eval $RULE
+	fi
+	IFS="${OIFS}"
+}
