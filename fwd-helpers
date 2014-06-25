@@ -13,7 +13,6 @@ function rm-port() {
 }
 
 function add-ip-port  () {
-	#sudo firewall-cmd --zone=public --add-rich-rule='rule family="ipv4" source address="81.193.152.66/24" port port="5900" protocol="tcp" accept'
 	RULE="sudo firewall-cmd --zone=public --add-rich-rule='rule family=\"ipv4\" source address=\"$1/24\" port port=\"$2\" protocol=\"tcp\" accept'";
 	eval $RULE;
 }
